@@ -33,18 +33,20 @@ class LspEndpoint(threading.Thread):
                 if jsonrpc_message is None:
                     logging.debug("server quit")
                     break
+
                 method = jsonrpc_message.get("method")
                 result = jsonrpc_message.get("result")
                 error = jsonrpc_message.get("error")
                 rpc_id = jsonrpc_message.get("id")
-                params = jsonrpc_message.get("params")
 
                 if method:
-                    if rpc_id:
+                    if rpc_id is not None:
+
                         # a call for method
                         if method not in self.method_callbacks:
-                            raise lsp_structs.ResponseError(lsp_structs.ErrorCodes.MethodNotFound, "Method not found: {method}".format(method=method))
-                        result = self.method_callbacks[method](params)
+                            raise lsp_structs.ResponseError(lsp_structs.ErrorCodes.MethodNotFound,
+                                                            f"Method not found: {method}")
+                        result = self.method_callbacks[method](jsonrpc_message)
                         self.send_response(rpc_id, result, None)
                     else:
                         # a call for notify
@@ -52,7 +54,7 @@ class LspEndpoint(threading.Thread):
                             # Have nothing to do with this.
                             logging.debug(f"Notify method not found: {method}.")
                         else:
-                            self.notify_callbacks[method](params)
+                            self.notify_callbacks[method](jsonrpc_message)
                 else:
                     self.handle_result(rpc_id, result, error)
             except lsp_structs.ResponseError as e:
