@@ -1,5 +1,6 @@
 from pylspclient import lsp_structs
 
+
 class LspClient(object):
     def __init__(self, lsp_endpoint):
         """
@@ -8,7 +9,6 @@ class LspClient(object):
         :param lsp_endpoint: TODO
         """
         self.lsp_endpoint = lsp_endpoint
-
 
     def initialize(self, processId, rootPath, rootUri, initializationOptions, capabilities, trace, workspaceFolders):
         """
@@ -39,7 +39,6 @@ class LspClient(object):
         self.lsp_endpoint.start()
         return self.lsp_endpoint.call_method("initialize", processId=processId, rootPath=rootPath, rootUri=rootUri, initializationOptions=initializationOptions, capabilities=capabilities, trace=trace, workspaceFolders=workspaceFolders)
 
-
     def initialized(self):
         """
         The initialized notification is sent from the client to the server after the client received the result of the initialize request
@@ -47,7 +46,6 @@ class LspClient(object):
         for example to dynamically register capabilities. The initialized notification may only be sent once.
         """
         self.lsp_endpoint.send_notification("initialized")
-
 
     def shutdown(self):
         """
@@ -57,8 +55,7 @@ class LspClient(object):
         """
         self.lsp_endpoint.stop()
         return self.lsp_endpoint.call_method("shutdown")
-       
-       
+
     def exit(self):
         """
         The initialized notification is sent from the client to the server after the client received the result of the initialize request
@@ -66,7 +63,6 @@ class LspClient(object):
         for example to dynamically register capabilities. The initialized notification may only be sent once.
         """
         self.lsp_endpoint.send_notification("exit")
-
 
     def didOpen(self, textDocument):
         """
@@ -84,8 +80,7 @@ class LspClient(object):
         :param TextDocumentItem textDocument: The document that was opened.
         """
         return self.lsp_endpoint.send_notification("textDocument/didOpen", textDocument=textDocument)
-    
-    
+
     def didChange(self, textDocument, contentChanges):
         """
         The document change notification is sent from the client to the server to signal changes to a text document. 
@@ -98,7 +93,6 @@ class LspClient(object):
         """
         return self.lsp_endpoint.send_notification("textDocument/didChange", textDocument=textDocument, contentChanges=contentChanges)
 
-
     def documentSymbol(self, textDocument):
         """
         The document symbol request is sent from the client to the server to return a flat list of all symbols found in a given text document. 
@@ -108,7 +102,6 @@ class LspClient(object):
         """
         result_dict =  self.lsp_endpoint.call_method("textDocument/documentSymbol", textDocument=textDocument)
         return [lsp_structs.SymbolInformation(**sym) for sym in result_dict]
-
 
     def definition(self, textDocument, position):
         """
@@ -120,7 +113,6 @@ class LspClient(object):
         result_dict = self.lsp_endpoint.call_method("textDocument/definition", textDocument=textDocument, position=position)
         return [lsp_structs.Location(**l) for l in result_dict]
 
-
     def typeDefinition(self, textDocument, position):
         """
         The goto type definition request is sent from the client to the server to resolve the type definition location of a symbol at a given text document position.
@@ -131,7 +123,6 @@ class LspClient(object):
         result_dict = self.lsp_endpoint.call_method("textDocument/definition", textDocument=textDocument, position=position)
         return [lsp_structs.Location(**l) for l in result_dict]
 
-
     def signatureHelp(self, textDocument, position):
             """
             The signature help request is sent from the client to the server to request signature information at a given cursor position.            
@@ -141,7 +132,6 @@ class LspClient(object):
             """
             result_dict = self.lsp_endpoint.call_method("textDocument/signatureHelp", textDocument=textDocument, position=position)
             return lsp_structs.SignatureHelp(**result_dict)
-
 
     def completion(self, textDocument, position, context):
             """
@@ -157,8 +147,7 @@ class LspClient(object):
                 return lsp_structs.CompletionList(**result_dict)
             
             return [lsp_structs.CompletionItem(**l) for l in result_dict]
-    
-    
+
     def declaration(self, textDocument, position):
             """
             The go to declaration request is sent from the client to the server to resolve the declaration location of a 
@@ -175,7 +164,6 @@ class LspClient(object):
                 return lsp_structs.Location(**result_dict)
 
             return [lsp_structs.Location(**l) if "uri" in l else lsp_structs.LinkLocation(**l) for l in result_dict]
-   
 
     def definition(self, textDocument, position):
             """

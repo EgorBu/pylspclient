@@ -1,6 +1,5 @@
 from __future__ import print_function
 import json
-import re
 from pylspclient import lsp_structs
 import threading
 
@@ -41,7 +40,6 @@ class JsonRpcEndpoint(object):
         '''
         return JSON_RPC_REQ_FORMAT.format(json_string_len=len(json_string), json_string=json_string)
 
-
     def send_request(self, message):
         '''
         Sends the given message.
@@ -53,7 +51,6 @@ class JsonRpcEndpoint(object):
         with self.write_lock:
             self.stdin.write(jsonrpc_req.encode())
             self.stdin.flush()
-
 
     def recv_response(self):
         '''        
