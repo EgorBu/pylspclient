@@ -18,10 +18,11 @@ class LspEndpoint(threading.Thread):
 
     def handle_result(self, rpc_id, result, error):
         self.response_dict[rpc_id] = (result, error)
-        cond = self.event_dict[rpc_id]
-        cond.acquire()
-        cond.notify()
-        cond.release()
+        if rpc_id in self.event_dict:
+            cond = self.event_dict[rpc_id]
+            cond.acquire()
+            cond.notify()
+            cond.release()
 
     def stop(self):
         self.shutdown_flag = True
